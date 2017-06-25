@@ -47,7 +47,7 @@ The goals / steps of this project are the following:
 
 ### Writeup / README
 
-All the code and the examples are included in the Jupyter Notebool [P4.ipynb](https://github.com/ernestocanibano/CarND-Advanced-Lane-Lines-P4/blob/master/P4.ipynb)
+All the code and the examples are included in the Jupyter Notebool [P4.ipynb](./P4.ipynb).
 
 ### Camera Calibration
 
@@ -83,7 +83,7 @@ and two gradient thresholds to generate a binary image. The proccess is summariz
 * Gradiente threshold of the S-channel of the image converted to HLS colormap. It's good detecting yellow lanes.
 * Color threshold of the H-channel of the HLS image. I can't filter vertical lanes which are not marks of the road.
 
-Here's an example of my output for this step.  
+Here are two examples of my output for this step.  
 
 ![alt text][image4]
 
@@ -116,19 +116,40 @@ The code to generate the following images is in cell 19.
 
 #### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
 
-Then I did some other stuff and fit my lane lines with a 2nd order polynomial kinda like this:
+This proccess is performed by the function `drawLineBoundaries()` which code is in cell 20. This function received the warped image. Two examples of the input images are showed in the image bellow.
 
-![alt text][image5]
+![alt text][image6]
+
+The function receive as parameter the class `Lines`. This class is used to save the line data of the previous frame
+of the video. The funcion follows the same step as in the lecture 13 of the nanodegree but with the following modifications.
+
+* If data of the previous frame is available, the calculation of the lines is done using the previous data instead of the slicing windows method.
+* If in the current frame any point is detected, we use the data of the previous frame.
+* At the end of the function a sanity check is done. If the parameters of curvature, position and width of the lane present any abrupt change with the previous frame, the current frame is discared.
+
+In the following image is possible to see al the steps of the proccess in detail.
+
+![alt text][image7]
+
+The data output (lines, points, image...) are stored in an object of the class `Lines()` to be used later in the pipeline.
 
 #### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
 
-I did this in lines # through # in my code in `my_other_file.py`
+All the data, curvature, car position and width of the lane are drawn in yellow color over the output image. The calculation
+of these parameters are peformed by the function `drawLineBoundaries()` (cell 20) and painted in the image by the function
+`addTextToImage()` (cell 24). To transform the lenghts from pixel to meters y use the first test image and assumed a width of the lane
+of 3.7 meters.
 
 #### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
 
-I implemented this step in lines # through # in my code in `yet_another_file.py` in the function `map_lane()`.  Here is an example of my result on a test image:
+I implemented this step in function `addPoligonToImage()` in cell 24. Here is an example of my result on a test images. I added
+two additonal images to test the *challenge video*.
 
-![alt text][image6]
+![alt text][image8] ![alt text][image9]
+![alt text][image10] ![alt text][image11]
+![alt text][image12] ![alt text][image13]
+![alt text][image14] ![alt text][image15]
+![alt text][image16] ![alt text][image17]
 
 ---
 
@@ -136,7 +157,9 @@ I implemented this step in lines # through # in my code in `yet_another_file.py`
 
 #### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (wobbly lines are ok but no catastrophic failures that would cause the car to drive off the road!).
 
-Here's a [link to my video result](./project_video.mp4)
+Here's a [link to my video result](./project_video_output.mp4).
+
+I will use the pipeline with the [challenge video](./challenge_video_output.mp4).
 
 ---
 
@@ -144,4 +167,5 @@ Here's a [link to my video result](./project_video.mp4)
 
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
+The pipeline fails when another vertical lines appear in the road: for example when the asphalt has two different colors, black wheel marks... 
+I solved this with the sanity check. To improve the pipeline I think i will have to improve de detection of the lines (function `thresholdImage()` in cell 16). With this i think it would be possible to detect the lines in the third video.
