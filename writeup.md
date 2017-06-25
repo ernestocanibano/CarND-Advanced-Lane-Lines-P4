@@ -1,6 +1,6 @@
 ## Advanced Lane Finding
 
-### Template by Ernesto Cañibano.
+### Writeup by Ernesto Cañibano.
 
 ---
 
